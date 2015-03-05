@@ -1,1 +1,2 @@
+1,add http proxy to git
 git config --global http.proxy xxx
