@@ -1,0 +1,78 @@
+FORMAT: 1A
+HOST: http://push.liulishuo.com/
+
+# push
+
+push is a simple API allowing consumers to send notifications to iOS devices
+
+# Push API Root [/]
+
+This resource does not have any attributes. Instead it offers the initial
+API affordances in the form of the links in the JSON body.
+
+It is recommend to follow the “url” link values,
+[Link](https://tools.ietf.org/html/rfc5988) or Location headers where
+applicable to retrieve resources. Instead of constructing your own URLs,
+to keep your client decoupled from implementation details.
+
+
+## Send Notifications to iOS device [/ios/push]
+
+### Make a New Notification [POST]
+
+The APNS support two kind of alert message, one is with only text message,
+if you want this kind, just set the `body` in alert json. the other is a extend version
+of alert, which has a lot other child properties, please see following annoations or
+apple's offical docs.if you do not need some properties, just omit it in request.
+if you have a lot of messages to send and you care the throuhput, batch the requests
+(100 messages one request for example).
+
+[Payload](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html)
+
++ deviceToken (string) - The deviceToken apple supplies
++ alert (json) - An alert or extend version alert to show on user's device
++ title (string) - A short string describing the purpose of the notification
++ body (string) - The text of the alert message
++ title-loc-key (string or null) - The key to a title string in the Localizable.strings file for the current localization
++ title-loc-args (array[string] or null) - Variable string values to appear in place of the format specifiers in title-loc-key
++ action-loc-key (string or null) - If a string is specified, the system displays an alert that includes the Close and View buttons.
++ loc-key (string) - A key to an alert-message string in a Localizable.strings file for the current localization
++ loc-args (array[string]) - Variable string values to appear in place of the format specifiers in loc-key
++ launch-image (string) - The filename of an image file in the app bundle; it may include the extension or omit it.
++ custome-fields(string dict) - The user defined custom fields.
+
++ code (int) - error code
++ msg (string) - error msg
++ failedPayloads (array[payload]) -the payloads not valide
+
++ Request (application/json)
+
+
+            [{
+                "device-token": "this is a device token",
+                "alert-text": "alert text",
+                "alert": {
+                    "title": "title",
+                    "body": "body",
+                    "title-loc-key": "title-loc-key",
+                    "title-loc-args": ["args1","args2"],
+                    "action-local-key": "this is a action local key",
+                    "local-key": "this is a local key",
+                    "local-args": ["args1", "args2"],
+                    "launch-image": "this is launch image"
+                },
+                "sound": "this is sound resource",
+                "badge": 0,
+                "content-available": 0,
+                "custom-fields": {
+                }
+            }]
+
++ Response 200 (application/json)
+    + Body
+    
+            {
+                "code": 0,
+                "msg": "success",
+                "failedPayloads":{}
+            }
